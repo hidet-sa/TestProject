@@ -10,6 +10,7 @@ public class WallManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        return;
         int[,] wallTable = new int[10, 10] {
             //0, 1, 2, 3, 4, 5, 6, 7, 8, 9
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//0

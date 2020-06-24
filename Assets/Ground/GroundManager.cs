@@ -8,6 +8,7 @@ public class GroundManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        return;
         // プレハブを元にオブジェクトを生成する
         float groundObjectWidthHalf = 0.5f;
         float groundObjectHeightHalf = 0.5f;
