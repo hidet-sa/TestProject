@@ -45,7 +45,7 @@ public class BallController : MonoBehaviour
                 //Debug.Log("FlickY:" + flickVector.y.ToString());
                 var moveZ = stage.GetComponent<StageManager>().FindMoveY(stagePos, -flickVector.y);
                 stagePos.y += moveZ;
-                Debug.Log("Y:" + moveZ.ToString() + ":" + flickVector.y.ToString());
+                //Debug.Log("Y:" + moveZ.ToString() + ":" + flickVector.y.ToString());
                 LeanTween.moveZ(this.gameObject, this.gameObject.transform.position.z - moveZ, Math.Abs(moveZ * speed));
             }
         }
@@ -79,7 +79,7 @@ public class BallController : MonoBehaviour
         }
         else if(other.gameObject.CompareTag("Ground"))
         {
-            Debug.Log("Collided Ground");
+            //Debug.Log("Collided Ground");
             Color color = Color.white;
             ColorUtility.TryParseHtmlString("#64A70B", out color);
             other.GetComponent<GroundCubeController>().changeColor(color);

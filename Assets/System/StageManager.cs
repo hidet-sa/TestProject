@@ -60,6 +60,9 @@ public class StageManager : MonoBehaviour
     //地面ブロック数を取得する。
     public int GetGroundCubeMax() {
         int cubeNum = 0;
+        if (stageTable == null) {
+            return cubeNum;
+        }
         for(int i = 0; i < stageTable.GetLength(0); i++) {
             for(int j = 0; j < stageTable.GetLength(1); j++) {
                 var type = stageTable[i, j];
@@ -74,6 +77,9 @@ public class StageManager : MonoBehaviour
     //地面キューブで変化した数を取得する。
     public int GetChangeGroundCubeNum() {
         int cubeNum = 0;
+        if(ground == null) {
+            return cubeNum;
+        }
         for(int i = 0; i < ground.Length; i++) {
             var p = ground[i];
             if (p.GetComponent<GroundCubeController>().isChangeColor) {
