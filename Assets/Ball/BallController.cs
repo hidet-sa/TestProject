@@ -11,19 +11,21 @@ public class BallController : MonoBehaviour
     public GameObject ballAfterImage = null;
     private Vector3 oldPosition;
     public bool ignoredTrigger = false;
+    public GameObject effect = null;
 
     // Start is called before the first frame update
     void Start()
     {
         flickFlag = false;
         flickVector = new Vector2(0, 0);
-//        int pointX = 3;
- //       int pointY = 3;
+        //        int pointX = 3;
+        //       int pointY = 3;
 
-//        this.gameObject.transform.position = new Vector3(Random.Range(-5, 5), Random.Range(3, 5), Random.Range(-5, 5));
- //       LeanTween.move(this.gameObject, new Vector3(pointX + 0.5f, 0.5f, pointY + 0.5f), 1.0f);
+        //        this.gameObject.transform.position = new Vector3(Random.Range(-5, 5), Random.Range(3, 5), Random.Range(-5, 5));
+        //       LeanTween.move(this.gameObject, new Vector3(pointX + 0.5f, 0.5f, pointY + 0.5f), 1.0f);
 
         //this.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+
 
         oldPosition = this.gameObject.transform.position;
         //this.gameObject.transform.position = new Vector3(pointX + 0.5f, 0.5f, pointY + 0.5f);
@@ -54,7 +56,7 @@ public class BallController : MonoBehaviour
         }
 
         if (oldPosition != this.gameObject.transform.position) {
-            if (counter % 20 == 0) {
+            if (counter % 4 == 0) {
                 if (ballAfterImage != null) {
                     Instantiate(ballAfterImage, this.gameObject.transform.position, Quaternion.identity);
                 }
@@ -62,6 +64,12 @@ public class BallController : MonoBehaviour
         }
         oldPosition = this.gameObject.transform.position;
 
+
+        if(counter % 60 == 0) {
+            var obj = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity);
+            Destroy(obj, 1.0f);
+        }
+        counter++;
     }
 
     private void OnTriggerEnter(Collider other)
