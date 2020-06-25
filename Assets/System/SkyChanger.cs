@@ -26,7 +26,7 @@ public class SkyChanger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time - oldTime > 15.0f) {
+        if (Time.time - oldTime > 30.0f) {
             oldTime = Time.time;
             changeFlag = true;
         }

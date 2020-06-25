@@ -435,6 +435,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86030e88c9c6d5444977a09168b24d06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stage: {fileID: 1225032618}
 --- !u!1 &573070474
 GameObject:
   m_ObjectHideFlags: 0
@@ -489,7 +490,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 0
-  orthographic size: 11.365887
+  orthographic size: 11.354839
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1173,9 +1174,9 @@ RectTransform:
   m_Father: {fileID: 1810785463}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 80, y: 0}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1902968161
@@ -1202,7 +1203,7 @@ MonoBehaviour:
     m_FontStyle: 0
     m_BestFit: 1
     m_MinSize: 10
-    m_MaxSize: 18
+    m_MaxSize: 16
     m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 0

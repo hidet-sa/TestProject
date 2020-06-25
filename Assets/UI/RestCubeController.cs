@@ -14,9 +14,11 @@ public class RestCubeController : MonoBehaviour
     void Start()
     {
         _text = GetComponent<Text>();
-        _text.text = "";
         _cubeMax = stage.GetComponent<StageManager>().GetGroundCubeMax();
         _cubeNum = stage.GetComponent<StageManager>().GetChangeGroundCubeNum();
+        _text.text = "Cube: " + _cubeNum.ToString() + " / " + _cubeMax.ToString();
+        LeanTween.alphaText(_text.rectTransform, 0.0f, 0.0f);
+        LeanTween.alphaText(_text.rectTransform, 1.0f, 1.0f).setDelay(1.0f);
     }
 
     // Update is called once per frame
@@ -26,7 +28,7 @@ public class RestCubeController : MonoBehaviour
         var cubeNum = stage.GetComponent<StageManager>().GetChangeGroundCubeNum();
 
         if(cubeMax != _cubeMax || cubeNum != _cubeNum) {
-            _text.text = "Rest:" + cubeNum.ToString() + " / " + cubeMax.ToString();
+            _text.text = "Cube :" + cubeNum.ToString() + " / " + cubeMax.ToString();
             _cubeMax = cubeMax;
             _cubeNum = cubeNum;
         }

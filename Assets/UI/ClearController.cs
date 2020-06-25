@@ -6,16 +6,25 @@ using UnityEngine.UI;
 public class ClearController : MonoBehaviour
 {
     private Text _text;
+    public GameObject stage;
+    private bool _clearFlag;
+
     // Start is called before the first frame update
     void Start()
     {
         _text = this.GetComponent<Text>();
+        _clearFlag = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (_clearFlag) return;
+        var stageManager = stage.GetComponent<StageManager>();
+        if (stageManager.GetChangeGroundCubeNum() == stageManager.GetGroundCubeMax()) {
+            StartText();
+            _clearFlag = true;
+        }
     }
 
     public void StartText(string str) {

@@ -15,7 +15,8 @@ public class BallController : MonoBehaviour
     public GameObject effect = null;
     public GameObject stage = null;
     public Vector2Int stagePos;
-    float speed = 0.05f;
+    float speed = 0.04f;
+    private string changeColor = "#64A70B";
 
     // Start is called before the first frame update
     void Start()
@@ -52,7 +53,7 @@ public class BallController : MonoBehaviour
 
         //残像処理。
         if (oldPosition != this.gameObject.transform.position) {
-            if (counter % 4 == 0) {
+            if (counter % 2 == 0) {
                 if (ballAfterImage != null) {
                     Instantiate(ballAfterImage, this.gameObject.transform.position, Quaternion.identity);
                 }
@@ -61,7 +62,7 @@ public class BallController : MonoBehaviour
         oldPosition = this.gameObject.transform.position;
 
         //壁に当たった時のエフェクト。
-        if(counter % 60 == 0) {
+        if(counter % 90 == 0) {
             var obj = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity);
             Destroy(obj, 1.0f);
         }
@@ -81,7 +82,21 @@ public class BallController : MonoBehaviour
         {
             //Debug.Log("Collided Ground");
             Color color = Color.white;
-            ColorUtility.TryParseHtmlString("#64A70B", out color);
+            ColorUtility.TryParseHtmlString(changeColor, out color);
+            other.GetComponent<GroundCubeController>().changeColor(color);
+        }
+    }
+
+    private void OnTriggerStay(Collider other) {
+
+        if (ignoredTrigger == true) {
+            return;
+        }
+
+        if (other.gameObject.CompareTag("Ground")) {
+            //Debug.Log("Collided Ground");
+            Color color = Color.white;
+            ColorUtility.TryParseHtmlString(changeColor, out color);
             other.GetComponent<GroundCubeController>().changeColor(color);
         }
     }

@@ -21,7 +21,7 @@ public class TapCircle : MonoBehaviour
         mSpriteRenderer.material.SetFloat("_StartTime", Time.time);
 
         float animationTime = mSpriteRenderer.material.GetFloat("_AnimationTime");
-        Debug.Log("animationTime:" + animationTime.ToString());
+        //Debug.Log("animationTime:" + animationTime.ToString());
         float destroyTime = animationTime;
         destroyTime -= mSpriteRenderer.material.GetFloat("_StartWidth") * animationTime;
         destroyTime += mSpriteRenderer.material.GetFloat("_Width") * animationTime;
@@ -29,8 +29,6 @@ public class TapCircle : MonoBehaviour
     }
 
     void Update() {
-       // Vector3 p = Camera.main.transform.position;
-       // transform.LookAt(p);
     }
 
     public void unenabledTrigger()

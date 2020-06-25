@@ -6,8 +6,7 @@ using UnityEngine.EventSystems;
 using TouchScript.Gestures;
 using System;
 
-public class StageManager : MonoBehaviour
-{
+public class StageManager : MonoBehaviour {
     public Camera camera;
     public GameObject tapEffect;
     public GameObject ballPrefab;
@@ -16,6 +15,7 @@ public class StageManager : MonoBehaviour
     private int[,] stageTable;//stageTable(0:ground, 1:wall, 2:ball)
 
     private GameObject[] ground;
+    private GameObject[] wall;
     private GameObject ball;
     struct ObjData {
         public GameObject _gameObject { get; }
@@ -23,16 +23,21 @@ public class StageManager : MonoBehaviour
         public ObjData(GameObject gameObject, Vector3 pos) { _gameObject = gameObject; _pos = pos; }
     };
 
+    private bool _clearEffectFlag;
+
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start() {
         CreateStage(0);
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
+    void Update() {
+        if (!_clearEffectFlag) {
+            if (GetGroundCubeMax() == GetChangeGroundCubeNum()) {
+                StartClearEffect();
+                _clearEffectFlag = true;
+            }
+        }
     }
 
     private void OnEnable() {
@@ -82,7 +87,7 @@ public class StageManager : MonoBehaviour
         }
         for(int i = 0; i < ground.Length; i++) {
             var p = ground[i];
-            if (p.GetComponent<GroundCubeController>().isChangeColor) {
+            if (p != null && p.GetComponent<GroundCubeController>().isChangeColor) {
                 cubeNum++;
             }
         }
@@ -137,13 +142,13 @@ public class StageManager : MonoBehaviour
             //0, 1, 2, 3, 4, 5, 6, 7, 8, 9
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//0
             { 1, 2, 0, 0, 0, 0, 0, 0, 0, 1 },//1
-            { 1, 0, 0, 0, 0, 0, 1, 1, 1, 1 },//2
-            { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 },//3
-            { 1, 0, 0, 0, 0, 1, 1, 0, 0, 1 },//4
-            { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 },//5
-            { 1, 0, 0, 0, 0, 1, 0, 0, 0, 1 },//6
-            { 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },//7
-            { 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },//8
+            { 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 },//2
+            { 1, 0, 1, 0, 0, 0, 0, 0, 0, 1 },//3
+            { 1, 0, 1, 0, 0, 1, 1, 1, 0, 1 },//4
+            { 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 },//5
+            { 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 },//6
+            { 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 },//7
+            { 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 },//8
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//9
         };
 
@@ -156,10 +161,12 @@ public class StageManager : MonoBehaviour
         float adjustY = (rowMax % 2 == 0) ? 0.5f : 0.0f;
         int groundCubeMax = GetGroundCubeMax();
         ground = new GameObject[groundCubeMax];
+        wall = new GameObject[stageTable.Length - groundCubeMax];
 
         ObjData[] array = new ObjData[columnMax * rowMax + 1];
         int arrayNum = 0;
         int groundCubeNum = 0;
+        int wallCubeNum = 0;
         for (int column = 0; column < columnMax; column++) {
             for(int row = 0; row < rowMax; row++) {
                 Vector3 v = new Vector3(
@@ -180,12 +187,14 @@ public class StageManager : MonoBehaviour
                     obj = Instantiate(wallCubePrefab, v, Quaternion.identity);
                     obj.transform.parent = this.transform;//子オブジェクトとして登録。
                     array[arrayNum++] = new ObjData(obj, v);
+                    wall.SetValue(obj, wallCubeNum++);
                 }
                 if (type == 2) {//ball
                     obj = Instantiate(ballPrefab, v, Quaternion.identity);
                     var ballController = obj.GetComponent<BallController>();
                     ballController.ignoredTrigger = true;//接触判定を無効にする。
                     ballController.stage = this.gameObject;
+                    v.y += 1.0f;
                     array[arrayNum++] = new ObjData(obj, v);
 
                     ball = obj;
@@ -204,7 +213,7 @@ public class StageManager : MonoBehaviour
                 if (obj.CompareTag("Wall")) {
                     LeanTween.move(obj, obj.transform.position + new Vector3(0f, 0.5f, 0f), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay);
                 } else if (obj.CompareTag("Ball")) {
-                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, 0.5f, 0f), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay).setOnComplete(()=> {
+                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, -0.5f, 0f), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay).setOnComplete(()=> {
                         //接触判定無効を有効にする。
                         obj.GetComponent<BallController>().ignoredTrigger = false;
                     });
@@ -214,5 +223,18 @@ public class StageManager : MonoBehaviour
             });
             delayCount++;
         }
+    }
+
+    void StartClearEffect() {
+        //wall
+        for(int i = 0; i < wall.Length; i++) {
+            LeanTween.move(wall[i], wall[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+        }
+        //ground
+        for (int i = 0; i < ground.Length; i++) {
+            LeanTween.move(ground[i], ground[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+        }
+        //ball
+        LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
     }
 }
