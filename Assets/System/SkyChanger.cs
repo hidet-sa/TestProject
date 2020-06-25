@@ -27,7 +27,6 @@ public class SkyChanger : MonoBehaviour
     void Update()
     {
         if (Time.time - oldTime > 15.0f) {
-            Debug.Log("Time:" + Time.time.ToString());
             oldTime = Time.time;
             changeFlag = true;
         }

@@ -56,6 +56,15 @@ public class StageManager : MonoBehaviour
         ball.GetComponent<BallController>().setFlick(gesture.ScreenFlickVector);
     }
 
+    int GetBlockMax() {
+        var len = stageTable.Length;
+        var len1 = stageTable.GetLength(0);
+        var len2 = stageTable.GetLength(1);
+        Debug.Log("length:" + len.ToString());
+        Debug.Log("length1,2:" + len1.ToString() + "," + len2.ToString());
+        return len;
+    }
+
     void CreateStage(int stageNo) {
         //0:ground, 1:wall, 2:ball
         stageTable = new int[10, 10] {
@@ -71,6 +80,9 @@ public class StageManager : MonoBehaviour
             { 1, 0, 0, 0, 0, 1, 0, 1, 0, 1 },//8
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//9
         };
+
+        int maxBlock = GetBlockMax();
+        Debug.Log(maxBlock.ToString());
 
         // プレハブを元にオブジェクトを生成する
         float cubeWidthHalf = 0.5f;
@@ -107,6 +119,7 @@ public class StageManager : MonoBehaviour
                 if (type == 2) {//ball
                     obj = Instantiate(ballPrefab, v, Quaternion.identity);
                     obj.GetComponent<BallController>().ignoredTrigger = true;//接触判定を無効にする。
+
                     array[arrayNum++] = new ObjData(obj, v);
                     ball = obj;
                 }
