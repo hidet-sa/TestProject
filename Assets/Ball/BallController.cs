@@ -34,20 +34,20 @@ public class BallController : MonoBehaviour
         if (flickFlag == true) {
             flickFlag = false;
             if (flickVector.x != 0f) {
-                //this.gameObject.transform.position += new Vector3(flickVector.x, 0f, 0);
-                //Debug.Log("FlickX:" + flickVector.x.ToString());
                 var moveX = stage.GetComponent<StageManager>().FindMoveX(stagePos, flickVector.x);
                 stagePos.x += moveX;
-                //Debug.Log("X:" + moveX.ToString() + ":" + flickVector.x.ToString());
-                LeanTween.moveX(this.gameObject, this.gameObject.transform.position.x + moveX, Math.Abs(moveX * speed));
+                LeanTween.moveX(this.gameObject, this.gameObject.transform.position.x + moveX, Math.Abs(moveX * speed)).setOnComplete(() => {
+                    //振動させる。
+                    if(SystemInfo.supportsVibration) { Handheld.Vibrate(); }
+                });
             }
             if (flickVector.y != 0f) {
-                //this.gameObject.transform.position += new Vector3(0, 0, flickVector.y);
-                //Debug.Log("FlickY:" + flickVector.y.ToString());
                 var moveZ = stage.GetComponent<StageManager>().FindMoveY(stagePos, -flickVector.y);
                 stagePos.y += moveZ;
-                //Debug.Log("Y:" + moveZ.ToString() + ":" + flickVector.y.ToString());
-                LeanTween.moveZ(this.gameObject, this.gameObject.transform.position.z - moveZ, Math.Abs(moveZ * speed));
+                LeanTween.moveZ(this.gameObject, this.gameObject.transform.position.z - moveZ, Math.Abs(moveZ * speed)).setOnComplete(()=> {
+                    //振動させる。
+                    if (SystemInfo.supportsVibration) { Handheld.Vibrate(); }
+                });
             }
         }
 
