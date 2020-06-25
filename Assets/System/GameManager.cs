@@ -38,4 +38,10 @@ public class GameManager : MonoBehaviour
         var nowScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(nowScene.name);
     }
+
+    void OnGUI() {
+        if (GUI.Button(new Rect(Screen.width - 80, Screen.height - 30, 60, 20), "Restart")) {
+            RestartScene();
+        }
+    }
 }
