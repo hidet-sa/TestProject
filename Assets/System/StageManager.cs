@@ -27,7 +27,8 @@ public class StageManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        CreateStage(0);
+        var stageNo = GameManager.Instance.stageNo;
+        CreateStage(stageNo);
     }
 
     // Update is called once per frame
