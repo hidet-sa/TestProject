@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public int stageNo;
+    public int coinNum;
 
     void Awake() {
         if (null != Instance) {
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         stageNo = 0;
+        coinNum = 0;
     }
 
     // Update is called once per frame

@@ -15,6 +15,7 @@ public class StageManager : MonoBehaviour
     public GameObject groundCubePrefab;
     private int[,] stageTable;//stageTable(0:ground, 1:wall, 2:ball)
 
+    private GameObject[] ground;
     private GameObject ball;
     struct ObjData {
         public GameObject _gameObject { get; }
@@ -56,13 +57,72 @@ public class StageManager : MonoBehaviour
         ball.GetComponent<BallController>().setFlick(gesture.ScreenFlickVector);
     }
 
-    int GetBlockMax() {
-        var len = stageTable.Length;
-        var len1 = stageTable.GetLength(0);
-        var len2 = stageTable.GetLength(1);
-        Debug.Log("length:" + len.ToString());
-        Debug.Log("length1,2:" + len1.ToString() + "," + len2.ToString());
-        return len;
+    //地面ブロック数を取得する。
+    public int GetGroundCubeMax() {
+        int cubeNum = 0;
+        for(int i = 0; i < stageTable.GetLength(0); i++) {
+            for(int j = 0; j < stageTable.GetLength(1); j++) {
+                var type = stageTable[i, j];
+                if (type == 0 || type == 2) { //グラウンド or ボール
+                    cubeNum++;
+                }
+            }
+        }
+        return cubeNum;
+    }
+    
+    //地面キューブで変化した数を取得する。
+    public int GetChangeGroundCubeNum() {
+        int cubeNum = 0;
+        for(int i = 0; i < ground.Length; i++) {
+            var p = ground[i];
+            if (p.GetComponent<GroundCubeController>().isChangeColor) {
+                cubeNum++;
+            }
+        }
+        return cubeNum;
+    }
+
+    public int FindMoveX(Vector2Int v, float direct) {
+        int moveX = 0;
+        int dir = (direct > 0) ? 1 : -1;
+        var type = stageTable[v.y, v.x];
+        if(type == 1) {
+            return moveX;
+        }
+        while(true) { 
+            if((v.x + dir < 0) || (v.x + dir >= stageTable.GetLength(1))) {
+                break;
+            }
+            type = stageTable[v.y, v.x + dir];
+            if(type == 1) {
+                break;
+            }
+            v.x += dir;
+            moveX += dir;
+        }
+        return moveX;
+    }
+
+    public int FindMoveY(Vector2Int v, float direct) {
+        int moveY = 0;
+        int dir = (direct > 0) ? 1 : -1;
+        var type = stageTable[v.y, v.x];
+        if(type == 1) {
+            return moveY;
+        }
+        while(true) {
+            if((v.y + dir < 0) || (v.y + dir >= stageTable.GetLength(0))) {
+                break;
+            }
+            type = stageTable[v.y + dir, v.x];
+            if(type == 1) {
+                break;
+            }
+            v.y += dir;
+            moveY += dir;
+        }
+        return moveY;
     }
 
     void CreateStage(int stageNo) {
@@ -81,22 +141,19 @@ public class StageManager : MonoBehaviour
             { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//9
         };
 
-        int maxBlock = GetBlockMax();
-        Debug.Log(maxBlock.ToString());
-
         // プレハブを元にオブジェクトを生成する
-        float cubeWidthHalf = 0.5f;
-        float cubeHeightHalf = 0.5f;
-
-        int columnMax = 10;
-        int rowMax = 10;
+        int columnMax = stageTable.GetLength(0);
+        int rowMax = stageTable.GetLength(1);
         int columnMaxHalf = columnMax / 2;
         int rowMaxHalf = rowMax / 2;
         float adjustX = (columnMax % 2 == 0) ? 0.5f : 0.0f;
         float adjustY = (rowMax % 2 == 0) ? 0.5f : 0.0f;
+        int groundCubeMax = GetGroundCubeMax();
+        ground = new GameObject[groundCubeMax];
 
         ObjData[] array = new ObjData[columnMax * rowMax + 1];
         int arrayNum = 0;
+        int groundCubeNum = 0;
         for (int column = 0; column < columnMax; column++) {
             for(int row = 0; row < rowMax; row++) {
                 Vector3 v = new Vector3(
@@ -110,6 +167,8 @@ public class StageManager : MonoBehaviour
                     obj = Instantiate(groundCubePrefab, v, Quaternion.identity);
                     obj.transform.parent = this.transform;//子オブジェクトとして登録。
                     array[arrayNum++] = new ObjData(obj, v);
+                    obj.GetComponent<GroundCubeController>().stagePos = new Vector2Int(column, row);
+                    ground.SetValue(obj, groundCubeNum++);
                 }
                 if (type == 1) {//wall
                     obj = Instantiate(wallCubePrefab, v, Quaternion.identity);
@@ -118,10 +177,13 @@ public class StageManager : MonoBehaviour
                 }
                 if (type == 2) {//ball
                     obj = Instantiate(ballPrefab, v, Quaternion.identity);
-                    obj.GetComponent<BallController>().ignoredTrigger = true;//接触判定を無効にする。
-
+                    var ballController = obj.GetComponent<BallController>();
+                    ballController.ignoredTrigger = true;//接触判定を無効にする。
+                    ballController.stage = this.gameObject;
                     array[arrayNum++] = new ObjData(obj, v);
+
                     ball = obj;
+                    ball.GetComponent<BallController>().stagePos = new Vector2Int(column, row);
                 }
             }
         }

@@ -11,6 +11,7 @@ public class StageNameController : MonoBehaviour
     void Start()
     {
         _text = this.GetComponent<Text>();
+        StartText("Stage 1");
     }
 
     // Update is called once per frame

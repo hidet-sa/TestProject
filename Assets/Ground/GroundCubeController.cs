@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GroundCubeController : MonoBehaviour
 {
-    private bool isChangeColor = false;
+    public bool isChangeColor = false;
+    public Vector2Int stagePos;
 
     // Start is called before the first frame update
     void Start()
