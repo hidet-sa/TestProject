@@ -184,6 +184,7 @@ public class StageManager : MonoBehaviour {
         // プレハブを元にオブジェクトを生成する
         int columnMax = stageTable.GetLength(0);
         int rowMax = stageTable.GetLength(1);
+        Debug.Log(columnMax.ToString() + ":" + rowMax.ToString());
         int columnMaxHalf = columnMax / 2;
         int rowMaxHalf = rowMax / 2;
         float adjustX = (columnMax % 2 == 0) ? 0.5f : 0.0f;
@@ -209,7 +210,7 @@ public class StageManager : MonoBehaviour {
                     obj = Instantiate(groundCubePrefab, v, Quaternion.identity);
                     obj.transform.parent = this.transform;//子オブジェクトとして登録。
                     array[arrayNum++] = new ObjData(obj, v);
-                    obj.GetComponent<GroundCubeController>().stagePos = new Vector2Int(column, row);
+                    obj.GetComponent<GroundCubeController>().stagePos = new Vector2Int(row, column);
                     ground.SetValue(obj, groundCubeNum++);
                 }
                 if (type == 1) {//wall
@@ -227,7 +228,7 @@ public class StageManager : MonoBehaviour {
                     array[arrayNum++] = new ObjData(obj, v);
 
                     ball = obj;
-                    ball.GetComponent<BallController>().stagePos = new Vector2Int(column, row);
+                    ball.GetComponent<BallController>().stagePos = new Vector2Int(row, column);
                 }
             }
         }

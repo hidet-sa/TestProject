@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void LoadPlayData() {
-        stageNo = 1;// PlayerPrefs.GetInt("StageNo", 1);
+        stageNo = PlayerPrefs.GetInt("StageNo", 1);
     }
 
 

@@ -490,7 +490,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 0
-  orthographic size: 11.364487
+  orthographic size: 11.389137
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -668,8 +668,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c794ae30c13c5324eab85bc85b385008, type: 2}
   - {fileID: 2100000, guid: e05a8e3a000818046b640496bcb5b94c, type: 2}
   - {fileID: 2100000, guid: e4528f3b287f79645977bbe603cb4c82, type: 2}
-  - {fileID: 2100000, guid: b22e7d8cc15bb17469eb3c6eb99de99c, type: 2}
-  - {fileID: 2100000, guid: 5f4c648411fd0304a879e473d0aeb4e6, type: 2}
 --- !u!114 &1225032620
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -774,9 +772,9 @@ MonoBehaviour:
   sendStateChangeEvents: 0
   requireGestureToFail: {fileID: 0}
   friendlyGestures: []
-  flickTime: 0.1
-  minDistance: 1
-  movementThreshold: 0.5
+  flickTime: 0.05
+  minDistance: 0.1
+  movementThreshold: 0.1
   direction: 0
 --- !u!114 &1225032624
 MonoBehaviour:

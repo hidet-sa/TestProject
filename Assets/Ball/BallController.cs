@@ -39,6 +39,11 @@ public class BallController : MonoBehaviour
                 LeanTween.moveX(this.gameObject, this.gameObject.transform.position.x + moveX, Math.Abs(moveX * speed)).setOnComplete(() => {
                     //振動させる。
                     if(SystemInfo.supportsVibration) { Handheld.Vibrate(); }
+                    //エフェクト出す。
+                    var obj = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity);
+                    Destroy(obj, 1.0f);
+                    //カメラを揺らす。
+                    LeanTween.moveLocal(Camera.main.gameObject, Camera.main.gameObject.transform.position + new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f)), 0.2f).setEase(LeanTween.shake);
                 });
             }
             if (flickVector.y != 0f) {
@@ -47,6 +52,11 @@ public class BallController : MonoBehaviour
                 LeanTween.moveZ(this.gameObject, this.gameObject.transform.position.z - moveZ, Math.Abs(moveZ * speed)).setOnComplete(()=> {
                     //振動させる。
                     if (SystemInfo.supportsVibration) { Handheld.Vibrate(); }
+                    //エフェクト出す。
+                    var obj = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity);
+                    Destroy(obj, 1.0f);
+                    //カメラを揺らす。
+                    LeanTween.moveLocal(Camera.main.gameObject, Camera.main.gameObject.transform.position + new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f), UnityEngine.Random.Range(-0.1f, 0.1f)), 0.2f).setEase(LeanTween.shake);
                 });
             }
         }
@@ -60,12 +70,6 @@ public class BallController : MonoBehaviour
             }
         }
         oldPosition = this.gameObject.transform.position;
-
-        //壁に当たった時のエフェクト。
-        if(counter % 90 == 0) {
-            var obj = Instantiate(effect, this.gameObject.transform.position, Quaternion.identity);
-            Destroy(obj, 1.0f);
-        }
         counter++;
     }
 
