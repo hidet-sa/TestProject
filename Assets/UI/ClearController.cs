@@ -32,6 +32,7 @@ public class ClearController : MonoBehaviour
 
     public void StartText(string str) {
         _text.text = str;
+        _text.color = new Color(_text.color.r, _text.color.g, _text.color.b, 1.0f);
         LeanTween.alphaText(_text.rectTransform, 0, 2.0f);
         LeanTween.scale(_text.rectTransform, new Vector3(1.5f, 1.5f, 1.5f), 0.0f);
         LeanTween.scale(_text.rectTransform, new Vector3(3.0f, 3.0f, 3.0f), 2.0f).setDelay(0.5f);
