@@ -264,7 +264,10 @@ public class StageManager : MonoBehaviour {
             LeanTween.move(ground[i], ground[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
         }
         //ball
-        //LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+        LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+
+        //カメラを揺らす。
+        LeanTween.moveLocal(Camera.main.gameObject, Camera.main.gameObject.transform.position + new Vector3(UnityEngine.Random.Range(-1.1f, 1.1f), UnityEngine.Random.Range(-1.1f, 1.1f), UnityEngine.Random.Range(-1.1f, 1.1f)), 0.5f).setEase(LeanTween.punch);
     }
 
     void RemoveState() {
