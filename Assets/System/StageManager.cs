@@ -184,7 +184,6 @@ public class StageManager : MonoBehaviour {
         // プレハブを元にオブジェクトを生成する
         int columnMax = stageTable.GetLength(0);
         int rowMax = stageTable.GetLength(1);
-        Debug.Log(columnMax.ToString() + ":" + rowMax.ToString());
         int columnMaxHalf = columnMax / 2;
         int rowMaxHalf = rowMax / 2;
         float adjustX = (columnMax % 2 == 0) ? 0.5f : 0.0f;
