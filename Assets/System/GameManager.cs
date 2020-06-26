@@ -40,9 +40,9 @@ public class GameManager : MonoBehaviour
     }
 
     void OnGUI() {
-        if (GUI.Button(new Rect(Screen.width - 80, Screen.height - 30, 60, 20), "Restart")) {
-            RestartScene();
-        }
+//        if (GUI.Button(new Rect(Screen.width - 300, Screen.height - 160, 200, 100), "Restart" )) {
+//            RestartScene();
+//       }
     }
 
     public void SavePlayData() {
