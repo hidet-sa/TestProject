@@ -11,7 +11,8 @@ public class StageNameController : MonoBehaviour
     void Start()
     {
         _text = this.GetComponent<Text>();
-        StartText("Stage 1");
+        var stageNo = GameManager.Instance.stageNo;
+        StartText("Stage " + stageNo.ToString());
     }
 
     // Update is called once per frame

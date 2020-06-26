@@ -2,6 +2,11 @@
  * @author Valentin Simonov / http://va.lent.in/
  */
 
+#define ERROR_001//à»â∫ÇÃÉGÉâÅ[ÇÃèCê≥ÅB
+//NullReferenceException: Object reference not set to an instance of an object
+//TouchScript.Core.TouchManagerInstance.updateInputs() (at Assets/TouchScript/Scripts/Core/TouchManagerInstance.cs:628)
+//TouchScript.Core.TouchManagerInstance.Update () (at Assets/TouchScript/Scripts/Core/TouchManagerInstance.cs:577)
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -625,9 +630,20 @@ namespace TouchScript.Core
 
         private void updateInputs()
         {
+#if ERROR_001
+            if (samplerUpdateInputs == null) {
+                samplerUpdateInputs = CustomSampler.Create("[TouchScript] Update Inputs");
+            }
+            if(samplerUpdateInputs != null) {
+                samplerUpdateInputs.Begin();
+                for (var i = 0; i < inputCount; i++) inputs[i].UpdateInput();
+                samplerUpdateInputs.End();
+            }
+#else
             samplerUpdateInputs.Begin();
             for (var i = 0; i < inputCount; i++) inputs[i].UpdateInput();
             samplerUpdateInputs.End();
+#endif
         }
 
         private void updateAdded(List<Pointer> pointers)

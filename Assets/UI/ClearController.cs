@@ -19,11 +19,14 @@ public class ClearController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_clearFlag) return;
         var stageManager = stage.GetComponent<StageManager>();
-        if (stageManager.GetChangeGroundCubeNum() == stageManager.GetGroundCubeMax()) {
-            StartText();
-            _clearFlag = true;
+        if (stageManager._state == StageManager.State.kStateEnd) {
+            if (!_clearFlag) {
+                StartText();
+                _clearFlag = true;
+            }
+        } else {
+            _clearFlag = false;
         }
     }
 

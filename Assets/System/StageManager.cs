@@ -7,6 +7,14 @@ using TouchScript.Gestures;
 using System;
 
 public class StageManager : MonoBehaviour {
+
+    public enum State {
+        kStateNone,
+        kStateStart,
+        kStatePlay,
+        kStateEnd,
+    };
+
     public Camera camera;
     public GameObject tapEffect;
     public GameObject ballPrefab;
@@ -24,21 +32,50 @@ public class StageManager : MonoBehaviour {
     };
 
     private bool _clearEffectFlag;
+    public State _state = State.kStateNone;
 
     // Start is called before the first frame update
     void Start() {
-        var stageNo = GameManager.Instance.stageNo;
-        CreateStage(stageNo);
+        _state = State.kStateStart;
     }
 
     // Update is called once per frame
     void Update() {
-        if (!_clearEffectFlag) {
+
+        switch (_state) {
+        case State.kStateNone:
+            break;
+        case State.kStateStart:
+            var stageNo = GameManager.Instance.stageNo;
+            var stageData = GameManager.Instance.LoadStage(stageNo);
+            CreateStage(stageData.getTable());
+            Camera.main.GetComponent<CameraController>().StartCamera(stageNo % 2 == 0);
+            _state = State.kStatePlay;
+            break;
+        case State.kStatePlay:
+            if(LeanTween.isTweening()) {
+                break;
+            }
+            //クリアチェック。
             if (GetGroundCubeMax() == GetChangeGroundCubeNum()) {
                 StartClearEffect();
-                _clearEffectFlag = true;
+                GameManager.Instance.stageNo += 1;
+                if (GameManager.Instance.stageNo > 10) {
+                    GameManager.Instance.stageNo = 1;
+                }
+                GameManager.Instance.SavePlayData();
+                _state = State.kStateEnd;
             }
+            break;
+        case State.kStateEnd:
+            if(LeanTween.isTweening()) {
+                break;
+            }
+            RemoveState();
+            _state = State.kStateStart;
+            break;
         }
+
     }
 
     private void OnEnable() {
@@ -54,6 +91,9 @@ public class StageManager : MonoBehaviour {
     private void OnTapped(object sender, EventArgs e) {
         var gesture = sender as TapGesture;
         Vector3 pos = new Vector3(gesture.ScreenPosition.x, gesture.ScreenPosition.y, 1);
+        if(float.IsNaN(pos.x) || float.IsNaN(pos.y)) {
+            return;
+        }
         Vector2 worldPos = camera.ScreenToWorldPoint(pos);
         Instantiate(tapEffect, worldPos, Quaternion.identity);
     }
@@ -137,21 +177,9 @@ public class StageManager : MonoBehaviour {
         return moveY;
     }
 
-    void CreateStage(int stageNo) {
-        //0:ground, 1:wall, 2:ball
-        stageTable = new int[10, 10] {
-            //0, 1, 2, 3, 4, 5, 6, 7, 8, 9
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//0
-            { 1, 2, 0, 0, 0, 0, 0, 0, 0, 1 },//1
-            { 1, 0, 1, 1, 1, 1, 1, 1, 1, 1 },//2
-            { 1, 0, 1, 0, 0, 0, 0, 0, 0, 1 },//3
-            { 1, 0, 1, 0, 0, 1, 1, 1, 0, 1 },//4
-            { 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 },//5
-            { 1, 0, 1, 0, 0, 1, 0, 0, 0, 1 },//6
-            { 1, 0, 1, 0, 0, 1, 0, 1, 1, 1 },//7
-            { 1, 0, 0, 0, 0, 1, 0, 1, 1, 1 },//8
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//9
-        };
+    void CreateStage(int[,] table) {
+
+        stageTable = table;
 
         // プレハブを元にオブジェクトを生成する
         int columnMax = stageTable.GetLength(0);
@@ -238,4 +266,19 @@ public class StageManager : MonoBehaviour {
         //ball
         LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
     }
+
+    void RemoveState() {
+        //wall
+        for (int i = 0; i < wall.Length; i++) {
+            Destroy(wall[i]);
+        }
+        //ground
+        for (int i = 0; i < ground.Length; i++) {
+            Destroy(ground[i]);
+        }
+        //ball
+        Destroy(ball);
+    }
+
+
 }
