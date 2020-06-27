@@ -113,6 +113,9 @@ public class BallController : MonoBehaviour
         if (flickFlag == true) {
             return;
         }
+        if(LeanTween.isTweening(this.gameObject)) {
+            return;
+        }
         flickFlag = true;
 
         if (Mathf.Abs(v.x) >= Mathf.Abs(v.y)) {

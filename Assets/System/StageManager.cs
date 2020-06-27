@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using TouchScript.Gestures;
+using TouchScript.Gestures.TransformGestures;
 using System;
 
 public class StageManager : MonoBehaviour {
@@ -31,7 +32,6 @@ public class StageManager : MonoBehaviour {
         public ObjData(GameObject gameObject, Vector3 pos) { _gameObject = gameObject; _pos = pos; }
     };
 
-    private bool _clearEffectFlag;
     public State _state = State.kStateNone;
 
     // Start is called before the first frame update
@@ -54,7 +54,7 @@ public class StageManager : MonoBehaviour {
             break;
         case State.kStatePlay:
             if(LeanTween.isTweening()) {
-                break;
+           //     break;
             }
             //クリアチェック。
             if (GetGroundCubeMax() == GetChangeGroundCubeNum()) {
@@ -80,12 +80,12 @@ public class StageManager : MonoBehaviour {
 
     private void OnEnable() {
         GetComponent<TapGesture>().Tapped += OnTapped;
-        GetComponent<FlickGesture>().Flicked += OnFlicked;
+        GetComponent<ScreenTransformGesture>().Transformed += OnScreenTransform;
     }
 
     private void OnDisable() {
         GetComponent<TapGesture>().Tapped -= OnTapped;
-        GetComponent<FlickGesture>().Flicked -= OnFlicked;
+        GetComponent<ScreenTransformGesture>().Transformed -= OnScreenTransform;
     }
 
     private void OnTapped(object sender, EventArgs e) {
@@ -98,9 +98,9 @@ public class StageManager : MonoBehaviour {
         Instantiate(tapEffect, worldPos, Quaternion.identity);
     }
 
-    private void OnFlicked(object sender, EventArgs e) {
-        var gesture = sender as FlickGesture;
-        ball.GetComponent<BallController>().setFlick(gesture.ScreenFlickVector);
+    private void OnScreenTransform(object sender, EventArgs e) {
+        var gesture = sender as ScreenTransformGesture;
+        ball.GetComponent<BallController>().setFlick(gesture.DeltaPosition);
     }
 
     //地面ブロック数を取得する。
@@ -233,38 +233,35 @@ public class StageManager : MonoBehaviour {
         }
 
         //演出
-        float delayCount = 0f;
         for (int i = 0; i < array.Length; i++) {
             GameObject obj = array[i]._gameObject;
             obj.transform.position = new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10));
-            float delay = (float)delayCount / array.Length;
             LeanTween.move(obj, array[i]._pos, 1.0f).setEase(LeanTweenType.easeInSine).setOnComplete(()=>{
                 if (obj.CompareTag("Wall")) {
-                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, 0.5f, 0f), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay);
+                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, 0.5f, 0f), 0.5f).setEase(LeanTweenType.easeInQuad);
                 } else if (obj.CompareTag("Ball")) {
-                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, -0.5f, 0f), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay).setOnComplete(()=> {
+                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, -0.5f, 0f), 0.5f).setEase(LeanTweenType.easeInQuad).setOnComplete(()=> {
                         //接触判定無効を有効にする。
                         obj.GetComponent<BallController>().ignoredTrigger = false;
                     });
                 } else {
-                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, -0.5f, 0), 1.0f).setEase(LeanTweenType.easeInQuad).setDelay(delay);
+                    LeanTween.move(obj, obj.transform.position + new Vector3(0f, -0.5f, 0), 0.5f).setEase(LeanTweenType.easeInQuad);
                 }
             });
-            delayCount++;
         }
     }
 
     void StartClearEffect() {
         //wall
         for(int i = 0; i < wall.Length; i++) {
-            LeanTween.move(wall[i], wall[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+            LeanTween.move(wall[i], wall[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 1.5f);
         }
         //ground
         for (int i = 0; i < ground.Length; i++) {
-            LeanTween.move(ground[i], ground[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+            LeanTween.move(ground[i], ground[i].transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 1.5f);
         }
         //ball
-        LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 2.0f);
+        LeanTween.move(ball, ball.transform.position + new Vector3(UnityEngine.Random.Range(-10f, 10f), UnityEngine.Random.Range(-10f, 10), UnityEngine.Random.Range(-10, 10)), 1.5f);
 
         //カメラを揺らす。
         LeanTween.moveLocal(Camera.main.gameObject, Camera.main.gameObject.transform.position + new Vector3(UnityEngine.Random.Range(-1.1f, 1.1f), UnityEngine.Random.Range(-1.1f, 1.1f), UnityEngine.Random.Range(-1.1f, 1.1f)), 0.5f).setEase(LeanTween.punch);

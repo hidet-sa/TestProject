@@ -124,6 +124,6 @@ MonoBehaviour:
   ballAfterImage: {fileID: 4802104670677923674, guid: a828ef2e96251814d8368cc4b21f50cc,
     type: 3}
   ignoredTrigger: 1
-  effect: {fileID: 1459862227383078, guid: cc461484bcafc664fb68be84c1fc6860, type: 3}
+  effect: {fileID: 4457399802900985138, guid: 0c6ab73dda23ac54cb91e6d831376358, type: 3}
   stage: {fileID: 0}
   stagePos: {x: 0, y: 0}
