@@ -57,7 +57,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - PixelSnap: 0
-    - _AnimationTime: 0.3
+    - _AnimationTime: 1
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
@@ -89,10 +89,10 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _StartTime: 0
-    - _StartWidth: 0.1
+    - _StartWidth: 0.3
     - _UVSec: 0
     - _Val: 1
-    - _Width: 0.2
+    - _Width: 0.3
     - _ZWrite: 1
     - _isAlpha: 1
     - _isColorShift: 1
